@@ -1,0 +1,15 @@
+[features]
+seeds = false
+skip-lint = false
+[programs.devnet]
+bones_poker_contract = "5kdbnm4Kdc83dCSCVSASyoAJNemUt3bdFrPE3cpyvwZV"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "devnet"
+wallet = "/home/ubuntu/solana/bone-poker-contract/bones-poker-contract/BP-deploy-devnet.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
