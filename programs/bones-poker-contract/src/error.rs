@@ -18,11 +18,20 @@ pub enum PokerError {
     #[msg("Max Limit Tables Are Already Created(10)")]
     MaxTablesLimit,
     // 0x1775
+    #[msg("Max Limit Tounaments Are Already Created(20)")]
+    MaxTournamentsLimit,
+    // 0x1775
     #[msg("There Is No Tables Created")]
     MinTablesLimit,
+    // 0x1775
+    #[msg("There Is No Tournaments Created")]
+    MinTournamentsLimit,
     // 0x1776
     #[msg("Table Does Not Exist")]
     TableNotFound,
+    // 0x1776
+    #[msg("Tournament Does Not Exist")]
+    TournamentNotFound,
     // 0x1777
     #[msg("Insufficient Sol Balance")]
     InsufficientSolBalance,

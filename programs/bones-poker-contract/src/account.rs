@@ -20,3 +20,15 @@ pub struct GamePool {
     pub blinds: [u64; 10],   // 80
     pub max_seats: [u8; 10], // 10
 }
+
+#[account]
+#[derive(Default)]
+pub struct TournamentPool {
+    // 8 + 508
+    pub tournament_count: u64, // 8
+
+    pub stack: [u64; 20],    // 160
+    pub buy_in: [u64; 20],   // 160
+    pub blinds: [u64; 20],   // 160
+    pub max_seats: [u8; 20], // 20
+}

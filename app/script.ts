@@ -9,7 +9,7 @@ import {
     Transaction,
     Keypair
 } from '@solana/web3.js';
-import { ESCROW_VAULT_SEED, GamePool, GamePoolOnChain, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID, TREASURY_WALLET } from './types';
+import { ESCROW_VAULT_SEED, GamePool, GamePoolOnChain, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID, TOURNAMENT_POOL_SEED, TREASURY_WALLET } from './types';
 
 
 export const getTableData = async (
@@ -161,6 +161,42 @@ export const createUpdateBackendWalletTx = async (
     return tx;
 }
 
+export const createAddTournamentTx = async (
+    admin: PublicKey,
+    program: anchor.Program,
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number
+) => {
+    const [globalAuthority, global_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GLOBAL_AUTHORITY_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [tournamentPool, tournament_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(TOURNAMENT_POOL_SEED)],
+        PROGRAM_ID,
+    );
+
+    let tx = new Transaction();
+    console.log('==>initializing program', globalAuthority.toBase58(), admin.toBase58());
+
+    tx.add(program.instruction.addTournament(
+        global_bump, tournament_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
+        accounts: {
+            admin: admin,
+            globalAuthority,
+            tournamentPool,
+            systemProgram: SystemProgram.programId,
+            rent: SYSVAR_RENT_PUBKEY,
+        },
+        instructions: [],
+        signers: [],
+    }));
+    return tx;
+}
+
 export const createAddTableTx = async (
     admin: PublicKey,
     program: anchor.Program,
@@ -197,6 +233,39 @@ export const createAddTableTx = async (
     return tx;
 }
 
+export const createRemoveTournamentTx = async (
+    admin: PublicKey,
+    program: anchor.Program,
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number
+) => {
+    const [globalAuthority, global_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GLOBAL_AUTHORITY_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [tournamentPool, tournament_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(TOURNAMENT_POOL_SEED)],
+        PROGRAM_ID,
+    );
+
+    let tx = new Transaction();
+    console.log('==>initializing program', globalAuthority.toBase58(), admin.toBase58());
+
+    tx.add(program.instruction.removeTournament(
+        global_bump, tournament_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
+        accounts: {
+            admin: admin,
+            globalAuthority,
+            tournamentPool
+        },
+        instructions: [],
+        signers: [],
+    }));
+    return tx;
+}
 
 export const createRemoveTableTx = async (
     admin: PublicKey,
@@ -232,6 +301,41 @@ export const createRemoveTableTx = async (
     return tx;
 }
 
+export const createEnterTournamentTx = async (
+    player: PublicKey,
+    program: anchor.Program,
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number
+) => {
+    const [escrowVault, escrow_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(ESCROW_VAULT_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [tournamentPool, tournament_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(TOURNAMENT_POOL_SEED)],
+        PROGRAM_ID,
+    );
+
+    let tx = new Transaction();
+
+    tx.add(program.instruction.enterTournament(
+        escrow_bump, tournament_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
+        accounts: {
+            player: player,
+            escrowVault,
+            tournamentPool,
+            systemProgram: SystemProgram.programId,
+
+        },
+        instructions: [],
+        signers: [],
+    }));
+    return tx;
+}
+
 export const createEnterTableTx = async (
     player: PublicKey,
     program: anchor.Program,
@@ -258,6 +362,50 @@ export const createEnterTableTx = async (
             player: player,
             escrowVault,
             gamePool,
+            systemProgram: SystemProgram.programId,
+
+        },
+        instructions: [],
+        signers: [],
+    }));
+    return tx;
+}
+
+export const createUserLeaveTournamentTx = async (
+    admin: PublicKey,
+    program: anchor.Program,
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number,
+    user: PublicKey
+) => {
+
+    const [globalAuthority, global_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GLOBAL_AUTHORITY_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [escrowVault, escrow_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(ESCROW_VAULT_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [tournamentPool, tournament_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GAME_POOL_SEED)],
+        PROGRAM_ID,
+    );
+
+    let tx = new Transaction();
+
+    tx.add(program.instruction.userLeaveTournament(
+        global_bump, escrow_bump, tournament_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
+        accounts: {
+            owner: admin,
+            globalAuthority,
+            escrowVault,
+            tournamentPool,
+            user,
             systemProgram: SystemProgram.programId,
 
         },

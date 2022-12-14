@@ -118,6 +118,62 @@ export type BonesPokerContract = {
       ]
     },
     {
+      "name": "addTournament",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "addTable",
       "accounts": [
         {
@@ -153,6 +209,52 @@ export type BonesPokerContract = {
         },
         {
           "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "removeTournament",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
           "type": "u8"
         },
         {
@@ -220,6 +322,57 @@ export type BonesPokerContract = {
       ]
     },
     {
+      "name": "enterTournament",
+      "accounts": [
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "enterTable",
       "accounts": [
         {
@@ -250,6 +403,71 @@ export type BonesPokerContract = {
         },
         {
           "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "userLeaveTournament",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
           "type": "u8"
         },
         {
@@ -359,12 +577,7 @@ export type BonesPokerContract = {
           "isSigner": false
         },
         {
-          "name": "winner1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "winner2",
+          "name": "winner",
           "isMut": true,
           "isSigner": false
         },
@@ -384,11 +597,11 @@ export type BonesPokerContract = {
           "type": "u8"
         },
         {
-          "name": "gameBump",
-          "type": "u8"
+          "name": "rewardAmount",
+          "type": "u64"
         },
         {
-          "name": "rewardAmount",
+          "name": "leaveAmount",
           "type": "u64"
         }
       ]
@@ -466,6 +679,54 @@ export type BonesPokerContract = {
           }
         ]
       }
+    },
+    {
+      "name": "tournamentPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tournamentCount",
+            "type": "u64"
+          },
+          {
+            "name": "stack",
+            "type": {
+              "array": [
+                "u64",
+                20
+              ]
+            }
+          },
+          {
+            "name": "buyIn",
+            "type": {
+              "array": [
+                "u64",
+                20
+              ]
+            }
+          },
+          {
+            "name": "blinds",
+            "type": {
+              "array": [
+                "u64",
+                20
+              ]
+            }
+          },
+          {
+            "name": "maxSeats",
+            "type": {
+              "array": [
+                "u8",
+                20
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
   "errors": [
@@ -496,23 +757,43 @@ export type BonesPokerContract = {
     },
     {
       "code": 6005,
+      "name": "MaxTournamentsLimit",
+      "msg": "Max Limit Tounaments Are Already Created(20)"
+    },
+    {
+      "code": 6006,
       "name": "MinTablesLimit",
       "msg": "There Is No Tables Created"
     },
     {
-      "code": 6006,
+      "code": 6007,
+      "name": "MinTournamentsLimit",
+      "msg": "There Is No Tournaments Created"
+    },
+    {
+      "code": 6008,
       "name": "TableNotFound",
       "msg": "Table Does Not Exist"
     },
     {
-      "code": 6007,
+      "code": 6009,
+      "name": "TournamentNotFound",
+      "msg": "Tournament Does Not Exist"
+    },
+    {
+      "code": 6010,
       "name": "InsufficientSolBalance",
       "msg": "Insufficient Sol Balance"
     },
     {
-      "code": 6008,
+      "code": 6011,
       "name": "InvalidTreasuryAddress",
       "msg": "Invalid Treasury Address"
+    },
+    {
+      "code": 6012,
+      "name": "TableAlreadyExist",
+      "msg": "Table Is Already Existing"
     }
   ]
 };
@@ -637,6 +918,62 @@ export const IDL: BonesPokerContract = {
       ]
     },
     {
+      "name": "addTournament",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "addTable",
       "accounts": [
         {
@@ -672,6 +1009,52 @@ export const IDL: BonesPokerContract = {
         },
         {
           "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "removeTournament",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
           "type": "u8"
         },
         {
@@ -739,6 +1122,57 @@ export const IDL: BonesPokerContract = {
       ]
     },
     {
+      "name": "enterTournament",
+      "accounts": [
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "enterTable",
       "accounts": [
         {
@@ -769,6 +1203,71 @@ export const IDL: BonesPokerContract = {
         },
         {
           "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "userLeaveTournament",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "tournamentBump",
           "type": "u8"
         },
         {
@@ -878,12 +1377,7 @@ export const IDL: BonesPokerContract = {
           "isSigner": false
         },
         {
-          "name": "winner1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "winner2",
+          "name": "winner",
           "isMut": true,
           "isSigner": false
         },
@@ -903,11 +1397,11 @@ export const IDL: BonesPokerContract = {
           "type": "u8"
         },
         {
-          "name": "gameBump",
-          "type": "u8"
+          "name": "rewardAmount",
+          "type": "u64"
         },
         {
-          "name": "rewardAmount",
+          "name": "leaveAmount",
           "type": "u64"
         }
       ]
@@ -985,6 +1479,54 @@ export const IDL: BonesPokerContract = {
           }
         ]
       }
+    },
+    {
+      "name": "tournamentPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tournamentCount",
+            "type": "u64"
+          },
+          {
+            "name": "stack",
+            "type": {
+              "array": [
+                "u64",
+                20
+              ]
+            }
+          },
+          {
+            "name": "buyIn",
+            "type": {
+              "array": [
+                "u64",
+                20
+              ]
+            }
+          },
+          {
+            "name": "blinds",
+            "type": {
+              "array": [
+                "u64",
+                20
+              ]
+            }
+          },
+          {
+            "name": "maxSeats",
+            "type": {
+              "array": [
+                "u8",
+                20
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
   "errors": [
@@ -1015,23 +1557,43 @@ export const IDL: BonesPokerContract = {
     },
     {
       "code": 6005,
+      "name": "MaxTournamentsLimit",
+      "msg": "Max Limit Tounaments Are Already Created(20)"
+    },
+    {
+      "code": 6006,
       "name": "MinTablesLimit",
       "msg": "There Is No Tables Created"
     },
     {
-      "code": 6006,
+      "code": 6007,
+      "name": "MinTournamentsLimit",
+      "msg": "There Is No Tournaments Created"
+    },
+    {
+      "code": 6008,
       "name": "TableNotFound",
       "msg": "Table Does Not Exist"
     },
     {
-      "code": 6007,
+      "code": 6009,
+      "name": "TournamentNotFound",
+      "msg": "Tournament Does Not Exist"
+    },
+    {
+      "code": 6010,
       "name": "InsufficientSolBalance",
       "msg": "Insufficient Sol Balance"
     },
     {
-      "code": 6008,
+      "code": 6011,
       "name": "InvalidTreasuryAddress",
       "msg": "Invalid Treasury Address"
+    },
+    {
+      "code": 6012,
+      "name": "TableAlreadyExist",
+      "msg": "Table Is Already Existing"
     }
   ]
 };

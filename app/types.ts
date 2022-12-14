@@ -1,12 +1,13 @@
 import * as anchor from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 
-export const PROGRAM_ID = new PublicKey("5kdbnm4Kdc83dCSCVSASyoAJNemUt3bdFrPE3cpyvwZV");
+export const PROGRAM_ID = new PublicKey("A6gEoFvGyNPyYjYs7kQLibAsn3H8wD5f4rVDvBjTVace");
 export const TREASURY_WALLET = new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK");
 export const BE_ADDRESS = new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU");
 export const ADMIN = new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU");
 export const GLOBAL_AUTHORITY_SEED = "global-authority-v1";
 export const GAME_POOL_SEED = "game-pool-v1";
+export const TOURNAMENT_POOL_SEED = "tournament-pool-v1";
 export const ESCROW_VAULT_SEED = "escrow-vault-v1";
 
 export interface GlobalPool {
