@@ -463,9 +463,9 @@ export const createUserLeaveTableTx = async (
 export const createSendRewardTx = async (
     owner: PublicKey,
     program: anchor.Program,
-    winner1: PublicKey,
-    winner2: PublicKey,
-    gameVault: number
+    winner: PublicKey,
+    totalWinnedVault: number,
+    leaveVault: number
 ) => {
 
     const [globalAuthority, global_bump] = await PublicKey.findProgramAddress(
@@ -481,14 +481,13 @@ export const createSendRewardTx = async (
     let tx = new Transaction();
 
     tx.add(program.instruction.sendReward(
-        global_bump, escrow_bump, new anchor.BN(gameVault), {
+        global_bump, escrow_bump, new anchor.BN(totalWinnedVault), new anchor.BN(leaveVault), {
         accounts: {
             owner,
             globalAuthority,
             escrowVault,
             treasury: TREASURY_WALLET,
-            winner1,
-            winner2,
+            winner,
             systemProgram: SystemProgram.programId,
         },
         instructions: [],

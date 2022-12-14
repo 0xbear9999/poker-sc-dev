@@ -4,7 +4,7 @@ import * as anchor from '@project-serum/anchor';
 import fs from 'fs';
 import path from 'path';
 import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
-import { IDL as BonesPokerIDL } from "../target/types/bones_poker_contract";
+import { IDL as BonesPokerIDL } from "./bones_poker_contract";
 import {
     PublicKey,
 
@@ -241,36 +241,46 @@ export const userLeaveTournament = async (
     console.log("txHash =", txId);
 }
 
-export const userLeaveTable = async (
+export const userLeaveTableOnChain = async (
     stack: number,
     buy_in: number,
     blinds: number,
     max_seats: number,
     user: PublicKey
 ) => {
-    const tx = await createUserLeaveTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, user);
-    const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
-    tx.feePayer = payer.publicKey;
-    tx.recentBlockhash = blockhash;
-    payer.signTransaction(tx);
-    let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
-    await solConnection.confirmTransaction(txId, "confirmed");
-    console.log("txHash =", txId);
+    try {
+        const tx = await createUserLeaveTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, user);
+        const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
+        tx.feePayer = payer.publicKey;
+        tx.recentBlockhash = blockhash;
+        payer.signTransaction(tx);
+        let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
+        await solConnection.confirmTransaction(txId, "confirmed");
+        console.log("userleave txHash =", txId);
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 export const sendReward = async (
-    winner1: PublicKey,
-    winner2: PublicKey,
-    gameVault: number
+    winner: PublicKey,
+    totalWinnedVault: number,
+    leaveVault: number
 ) => {
-    const tx = await createSendRewardTx(payer.publicKey, program, winner1, winner2, gameVault);
-    const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
+    try {
+        console.log("payer >> ", payer.publicKey.toBase58())
+
+    const tx = await createSendRewardTx(payer.publicKey, program, winner, totalWinnedVault, leaveVault);
+    const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
     tx.feePayer = payer.publicKey;
     tx.recentBlockhash = blockhash;
     payer.signTransaction(tx);
     let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
     await solConnection.confirmTransaction(txId, "confirmed");
-    console.log("txHash =", txId);
+    console.log("sendReward txHash =", txId);
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 
