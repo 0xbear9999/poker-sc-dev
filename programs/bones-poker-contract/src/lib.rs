@@ -162,21 +162,21 @@ pub mod bones_poker_contract {
             tournament_pool.tournament_count <= 20,
             PokerError::MaxTournamentsLimit
         );
-        if tournament_pool.tournament_count > 0 {
-            let mut exist: u8 = 0;
-            for i in 0..tournament_pool.tournament_count {
-                let index = i as usize;
-                if tournament_pool.stack[index].eq(&stack)
-                    && tournament_pool.buy_in[index].eq(&buy_in)
-                    && tournament_pool.blinds[index].eq(&blinds)
-                    && tournament_pool.max_seats[index].eq(&max_seats)
-                {
-                    exist = 1;
-                    break;
-                }
-            }
-            require!(exist == 0, PokerError::TableAlreadyExist);
-        }
+        // if tournament_pool.tournament_count > 0 {
+        //     let mut exist: u8 = 0;
+        //     for i in 0..tournament_pool.tournament_count {
+        //         let index = i as usize;
+        //         if tournament_pool.stack[index].eq(&stack)
+        //             && tournament_pool.buy_in[index].eq(&buy_in)
+        //             && tournament_pool.blinds[index].eq(&blinds)
+        //             && tournament_pool.max_seats[index].eq(&max_seats)
+        //         {
+        //             exist = 1;
+        //             break;
+        //         }
+        //     }
+        //     require!(exist == 0, PokerError::TableAlreadyExist);
+        // }
 
         let count = tournament_pool.tournament_count as usize;
         tournament_pool.stack[count] = stack;
