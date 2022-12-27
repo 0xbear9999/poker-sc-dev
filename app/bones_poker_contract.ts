@@ -646,7 +646,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                10
+                20
               ]
             }
           },
@@ -655,7 +655,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                10
+                20
               ]
             }
           },
@@ -664,7 +664,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                10
+                20
               ]
             }
           },
@@ -673,7 +673,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u8",
-                10
+                20
               ]
             }
           }
@@ -753,7 +753,7 @@ export type BonesPokerContract = {
     {
       "code": 6004,
       "name": "MaxTablesLimit",
-      "msg": "Max Limit Tables Are Already Created(10)"
+      "msg": "Max Limit Tables Are Already Created(20)"
     },
     {
       "code": 6005,
@@ -1446,7 +1446,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                10
+                20
               ]
             }
           },
@@ -1455,7 +1455,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                10
+                20
               ]
             }
           },
@@ -1464,7 +1464,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                10
+                20
               ]
             }
           },
@@ -1473,7 +1473,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u8",
-                10
+                20
               ]
             }
           }
@@ -1553,7 +1553,7 @@ export const IDL: BonesPokerContract = {
     {
       "code": 6004,
       "name": "MaxTablesLimit",
-      "msg": "Max Limit Tables Are Already Created(10)"
+      "msg": "Max Limit Tables Are Already Created(20)"
     },
     {
       "code": 6005,

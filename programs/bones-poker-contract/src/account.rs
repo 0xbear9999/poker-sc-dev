@@ -13,12 +13,12 @@ pub struct GlobalPool {
 #[account]
 #[derive(Default)]
 pub struct GamePool {
-    // 8 + 258
+    // 8 + 508
     pub table_count: u64,    // 8
-    pub stack: [u64; 10],    // 80
-    pub buy_in: [u64; 10],   // 80
-    pub blinds: [u64; 10],   // 80
-    pub max_seats: [u8; 10], // 10
+    pub stack: [u64; 20],    // 160
+    pub buy_in: [u64; 20],   // 160
+    pub blinds: [u64; 20],   // 160
+    pub max_seats: [u8; 20], // 20
 }
 
 #[account]

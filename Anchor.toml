@@ -2,7 +2,7 @@
 seeds = false
 skip-lint = false
 [programs.devnet]
-bones_poker_contract = "A6gEoFvGyNPyYjYs7kQLibAsn3H8wD5f4rVDvBjTVace"
+bones_poker_contract = "7q9ZzDW4o8K4QPoNirc8tfmt72HwAxB4zvf1QnjcsM7E"
 
 [registry]
 url = "https://anchor.projectserum.com"

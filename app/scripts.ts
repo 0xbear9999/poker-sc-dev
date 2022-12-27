@@ -45,19 +45,19 @@ export const setClusterConfig = async (cluster: web3.Cluster) => {
 
 
 const main = async () => {
-    setClusterConfig('devnet');
+    setClusterConfig('mainnet-beta');
     // await initProject();
     // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
     // await getTableDataOnChain();
 
-    // await updateAdmin(new PublicKey("6tszx7eZ2hBFQBKqx8emdWmSZc9SLQKubRKfvfgdgdnK"));
+    await updateAdmin(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"));
 
-    // await updateTreasury(new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"));
+    // await updateTreasury(new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU"));
     // await updateBackendWallet(new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"));
     // await addTable(100, 100000000, 10, 8);
     // await RemoveTable(500, 10000000, 40, 10);
 
-    // await enterTable(100, 100000000, 10, 8);
+    // await enterTable(1000, 100000000, 50, 2);
     // await userLeaveTable(100, 100000000, 10, 8, new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"))
     // await sendReward(new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"), new PublicKey("DjMMsvj4ZUBpAXCaR2Z7XuqzWFMegpb86iEKBfj1HrH8"), 100000000);
 
@@ -270,14 +270,14 @@ export const sendReward = async (
     try {
         console.log("payer >> ", payer.publicKey.toBase58())
 
-    const tx = await createSendRewardTx(payer.publicKey, program, winner, totalWinnedVault, leaveVault);
-    const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
-    tx.feePayer = payer.publicKey;
-    tx.recentBlockhash = blockhash;
-    payer.signTransaction(tx);
-    let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
-    await solConnection.confirmTransaction(txId, "confirmed");
-    console.log("sendReward txHash =", txId);
+        const tx = await createSendRewardTx(payer.publicKey, program, winner, totalWinnedVault, leaveVault);
+        const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
+        tx.feePayer = payer.publicKey;
+        tx.recentBlockhash = blockhash;
+        payer.signTransaction(tx);
+        let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
+        await solConnection.confirmTransaction(txId, "confirmed");
+        console.log("sendReward txHash =", txId);
     } catch (e) {
         console.log(e)
     }

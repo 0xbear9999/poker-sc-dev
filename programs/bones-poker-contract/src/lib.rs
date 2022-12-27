@@ -10,7 +10,7 @@ use account::*;
 use constants::*;
 use error::*;
 
-declare_id!("A6gEoFvGyNPyYjYs7kQLibAsn3H8wD5f4rVDvBjTVace");
+declare_id!("7q9ZzDW4o8K4QPoNirc8tfmt72HwAxB4zvf1QnjcsM7E");
 
 #[program]
 pub mod bones_poker_contract {
@@ -217,13 +217,9 @@ pub mod bones_poker_contract {
         let (expected_gamepool_address, expected_gamepool_bump) =
             Pubkey::find_program_address(&[GAME_POOL_SEED.as_bytes()], &bones_poker_contract::ID);
         require_keys_eq!(game_pool.clone().key(), expected_gamepool_address);
-        require_eq!(
-            expected_gamepool_bump,
-            _global_bump,
-            PokerError::InvalidBump
-        );
+        require_eq!(expected_gamepool_bump, _game_bump, PokerError::InvalidBump);
 
-        require!(game_pool.table_count < 10, PokerError::MaxTablesLimit);
+        require!(game_pool.table_count < 20, PokerError::MaxTablesLimit);
         if game_pool.table_count > 0 {
             let mut exist: u8 = 0;
             for i in 0..game_pool.table_count {
@@ -862,7 +858,7 @@ pub struct AddTable<'info> {
         seeds = [GAME_POOL_SEED.as_ref()],
         bump,
         payer= admin,
-        space=258+8,
+        space=508+8,
     )]
     pub game_pool: Account<'info, GamePool>,
     pub system_program: Program<'info, System>,
