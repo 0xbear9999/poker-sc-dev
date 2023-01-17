@@ -7,11 +7,11 @@ import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
 import { IDL as BonesPokerIDL } from "./bones_poker_contract";
 import {
     PublicKey,
-
+    Connection,
     Keypair
 } from '@solana/web3.js';
-import { GLOBAL_AUTHORITY_SEED, PROGRAM_ID } from './types';
-import { createAddTableTx, createAddTournamentTx, createEnterTableTx, createEnterTournamentTx, createInitializeTx, createRemoveTableTx, createRemoveTournamentTx, createSendRewardTx, createUpdateAdminTx, createUpdateBackendWalletTx, createUpdateTreasuryTx, createUserLeaveTableTx, createUserLeaveTournamentTx, getTableData } from './script';
+import { ESCROW_VAULT_SEED, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID } from './types';
+import { createAddTableTx, createAddTournamentTx, createEnterTableTx, createEnterTableWithTokenTx, createEnterTournamentTx, createInitializeTx, createRemoveTableTx, createRemoveTournamentTx, createSendRewardTx, createUpdateAdminTx, createUpdateBackendWalletTx, createUpdateTreasuryTx, createUserLeaveTableTx, createUserLeaveTournamentTx, getTableData } from './script';
 
 
 let solConnection = null;
@@ -41,6 +41,17 @@ export const setClusterConfig = async (cluster: web3.Cluster) => {
     );
     console.log('GlobalAuthority: ', globalAuthority.toBase58());
     // await main();
+    const [gamePool, game_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GAME_POOL_SEED)],
+        PROGRAM_ID,
+    );
+    const [escrowVault, escrow_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(ESCROW_VAULT_SEED)],
+        PROGRAM_ID,
+    );
+    console.log("GamePool ", gamePool.toBase58())
+    console.log("Escrow Vault ", escrowVault.toBase58());
+
 }
 
 
@@ -50,22 +61,22 @@ const main = async () => {
     // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
     // await getTableDataOnChain();
 
+    // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
     await updateAdmin(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"));
 
     // await updateTreasury(new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU"));
     // await updateBackendWallet(new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"));
-    // await addTable(100, 100000000, 10, 8);
+    // await addTable(1000, 100000000, 50, 2);
     // await RemoveTable(500, 10000000, 40, 10);
 
     // await enterTable(1000, 100000000, 50, 2);
-    // await userLeaveTable(100, 100000000, 10, 8, new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"))
-    // await sendReward(new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"), new PublicKey("DjMMsvj4ZUBpAXCaR2Z7XuqzWFMegpb86iEKBfj1HrH8"), 100000000);
+    // await userLeaveTableOnChain(100, 100000000, 10, 8, new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"))
+    // await sendReward(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"), 400000000, 0);
 
 }
+
 export const getTableDataOnChain = async () => {
     try {
-
-
 
         let tableData = await getTableData(program);
         console.log("table data >> ", tableData)
@@ -132,9 +143,10 @@ export const addTable = async (
     stack: number,
     buy_in: number,
     blinds: number,
-    max_seats: number
+    max_seats: number,
+    tokenMint: PublicKey
 ) => {
-    const tx = await createAddTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats);
+    const tx = await createAddTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, tokenMint);
     const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
     tx.feePayer = payer.publicKey;
     tx.recentBlockhash = blockhash;
@@ -180,9 +192,10 @@ export const RemoveTable = async (
     stack: number,
     buy_in: number,
     blinds: number,
-    max_seats: number
+    max_seats: number,
+    tokenMint: PublicKey
 ) => {
-    const tx = await createRemoveTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats);
+    const tx = await createRemoveTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, tokenMint);
     const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
     tx.feePayer = payer.publicKey;
     tx.recentBlockhash = blockhash;
@@ -281,6 +294,23 @@ export const sendReward = async (
     } catch (e) {
         console.log(e)
     }
+}
+
+export const enterTableWithTokenOnChain = async (
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number,
+    tokenMint: PublicKey
+) => {
+    const tx = await createEnterTableWithTokenTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, tokenMint, solConnection);
+    const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
+    tx.feePayer = payer.publicKey;
+    tx.recentBlockhash = blockhash;
+    payer.signTransaction(tx);
+    let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
+    await solConnection.confirmTransaction(txId, "confirmed");
+    console.log("txHash =", txId);
 }
 
 

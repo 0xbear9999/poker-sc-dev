@@ -2,6 +2,12 @@ use anchor_lang::prelude::*;
 use solana_program::program::{invoke, invoke_signed};
 use solana_program::system_instruction;
 
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::{self, Token, TokenAccount, Transfer},
+};
+use spl_token::instruction::*;
+
 pub mod account;
 pub mod constants;
 pub mod error;
@@ -195,6 +201,7 @@ pub mod bones_poker_contract {
         buy_in: u64,
         blinds: u64,
         max_seats: u8,
+        token: Pubkey,
     ) -> Result<()> {
         let global_authority = &mut ctx.accounts.global_authority;
         let game_pool = &mut ctx.accounts.game_pool;
@@ -214,8 +221,10 @@ pub mod bones_poker_contract {
         );
 
         // Validate PDA bump and seed
-        let (expected_gamepool_address, expected_gamepool_bump) =
-            Pubkey::find_program_address(&[GAME_POOL_SEED.as_bytes()], &bones_poker_contract::ID);
+        let (expected_gamepool_address, expected_gamepool_bump) = Pubkey::find_program_address(
+            &[GAME_POOL_SEED_V3.as_bytes()],
+            &bones_poker_contract::ID,
+        );
         require_keys_eq!(game_pool.clone().key(), expected_gamepool_address);
         require_eq!(expected_gamepool_bump, _game_bump, PokerError::InvalidBump);
 
@@ -228,6 +237,7 @@ pub mod bones_poker_contract {
                     && game_pool.buy_in[index].eq(&buy_in)
                     && game_pool.blinds[index].eq(&blinds)
                     && game_pool.max_seats[index].eq(&max_seats)
+                    && game_pool.pay_token[index].eq(&token)
                 {
                     exist = 1;
                     break;
@@ -241,6 +251,7 @@ pub mod bones_poker_contract {
         game_pool.buy_in[count] = buy_in;
         game_pool.blinds[count] = blinds;
         game_pool.max_seats[count] = max_seats;
+        game_pool.pay_token[count] = token;
         game_pool.table_count += 1;
         Ok(())
     }
@@ -322,6 +333,7 @@ pub mod bones_poker_contract {
         buy_in: u64,
         blinds: u64,
         max_seats: u8,
+        token: Pubkey,
     ) -> Result<()> {
         let global_authority = &mut ctx.accounts.global_authority;
         let game_pool = &mut ctx.accounts.game_pool;
@@ -341,8 +353,10 @@ pub mod bones_poker_contract {
         );
 
         // Validate PDA bump and seed
-        let (expected_gamepool_address, expected_gamepool_bump) =
-            Pubkey::find_program_address(&[GAME_POOL_SEED.as_bytes()], &bones_poker_contract::ID);
+        let (expected_gamepool_address, expected_gamepool_bump) = Pubkey::find_program_address(
+            &[GAME_POOL_SEED_V3.as_bytes()],
+            &bones_poker_contract::ID,
+        );
         require_keys_eq!(game_pool.key(), expected_gamepool_address);
         require_eq!(expected_gamepool_bump, _game_bump, PokerError::InvalidBump);
 
@@ -354,6 +368,7 @@ pub mod bones_poker_contract {
                 && game_pool.stack[index].eq(&stack)
                 && game_pool.blinds[index].eq(&blinds)
                 && game_pool.max_seats[index].eq(&max_seats)
+                && game_pool.pay_token[index].eq(&token)
             {
                 if i < game_pool.table_count - 1 {
                     let last_idx = (game_pool.table_count - 1) as usize;
@@ -361,6 +376,7 @@ pub mod bones_poker_contract {
                     game_pool.buy_in[index] = game_pool.buy_in[last_idx];
                     game_pool.blinds[index] = game_pool.blinds[last_idx];
                     game_pool.max_seats[index] = game_pool.max_seats[last_idx];
+                    game_pool.pay_token[index] = game_pool.pay_token[last_idx];
                 }
                 game_pool.table_count -= 1;
                 exist_flag = 1;
@@ -457,8 +473,10 @@ pub mod bones_poker_contract {
         require_eq!(expected_escrow_bump, _escrow_bump, PokerError::InvalidBump);
 
         // Validate PDA bump and seed
-        let (expected_gamepool_address, expected_gamepool_bump) =
-            Pubkey::find_program_address(&[GAME_POOL_SEED.as_bytes()], &bones_poker_contract::ID);
+        let (expected_gamepool_address, expected_gamepool_bump) = Pubkey::find_program_address(
+            &[GAME_POOL_SEED_V3.as_bytes()],
+            &bones_poker_contract::ID,
+        );
         require_keys_eq!(game_pool.key(), expected_gamepool_address);
         require_eq!(expected_gamepool_bump, _game_bump, PokerError::InvalidBump);
 
@@ -469,6 +487,7 @@ pub mod bones_poker_contract {
                 && game_pool.stack[index].eq(&stack)
                 && game_pool.blinds[index].eq(&blinds)
                 && game_pool.max_seats[index].eq(&max_seats)
+                && game_pool.pay_token[index].eq(&SOL_ADDRESS.parse::<Pubkey>().unwrap())
             {
                 exist_flag = 1;
             }
@@ -492,6 +511,69 @@ pub mod bones_poker_contract {
                 ctx.accounts.system_program.to_account_info().clone(),
             ],
         )?;
+        Ok(())
+    }
+
+    pub fn enter_table_with_token(
+        ctx: Context<EnterTableWithToken>,
+        _escrow_bump: u8,
+        _game_bump: u8,
+        stack: u64,
+        buy_in: u64,
+        blinds: u64,
+        max_seats: u8,
+    ) -> Result<()> {
+        let game_pool = &ctx.accounts.game_pool;
+        let escrow_vault = &ctx.accounts.escrow_vault;
+        let token_mint = &mut ctx.accounts.token_mint;
+        let player_token_account = &mut &ctx.accounts.player_token_account;
+        let vault_token_account = &mut &ctx.accounts.vault_token_account;
+        let token_program = &mut &ctx.accounts.token_program;
+
+        // Validate PDA bump and seed
+        let (expected_escrow_address, expected_escrow_bump) = Pubkey::find_program_address(
+            &[ESCROW_VAULT_SEED.as_bytes()],
+            &bones_poker_contract::ID,
+        );
+        require_keys_eq!(escrow_vault.key(), expected_escrow_address);
+        require_eq!(expected_escrow_bump, _escrow_bump, PokerError::InvalidBump);
+
+        // Validate PDA bump and seed
+        let (expected_gamepool_address, expected_gamepool_bump) = Pubkey::find_program_address(
+            &[GAME_POOL_SEED_V3.as_bytes()],
+            &bones_poker_contract::ID,
+        );
+        require_keys_eq!(game_pool.key(), expected_gamepool_address);
+        require_eq!(expected_gamepool_bump, _game_bump, PokerError::InvalidBump);
+
+        let mut exist_flag: u8 = 0;
+        for i in 0..game_pool.table_count {
+            let index = i as usize;
+            if game_pool.buy_in[index].eq(&buy_in)
+                && game_pool.stack[index].eq(&stack)
+                && game_pool.blinds[index].eq(&blinds)
+                && game_pool.max_seats[index].eq(&max_seats)
+                && game_pool.pay_token[index].eq(&token_mint.key())
+            {
+                exist_flag = 1;
+            }
+        }
+        require_eq!(exist_flag, 1, PokerError::TableNotFound);
+
+        // require!(
+        //     ctx.accounts.player.to_account_info().lamports() > buy_in,
+        //     PokerError::InsufficientSolBalance
+        // );
+        let cpi_accounts = Transfer {
+            from: player_token_account.to_account_info().clone(),
+            to: vault_token_account.to_account_info().clone(),
+            authority: ctx.accounts.player.to_account_info().clone(),
+        };
+        token::transfer(
+            CpiContext::new(token_program.clone().to_account_info(), cpi_accounts),
+            buy_in,
+        )?;
+
         Ok(())
     }
 
@@ -538,7 +620,10 @@ pub mod bones_poker_contract {
 
         // Validate PDA bump and seed
         let (expected_tournamentpool_address, expected_tournamentpool_bump) =
-            Pubkey::find_program_address(&[GAME_POOL_SEED.as_bytes()], &bones_poker_contract::ID);
+            Pubkey::find_program_address(
+                &[TOURNAMENT_POOL_SEED.as_bytes()],
+                &bones_poker_contract::ID,
+            );
         require_keys_eq!(tournament_pool.key(), expected_tournamentpool_address);
         require_eq!(
             expected_tournamentpool_bump,
@@ -618,8 +703,10 @@ pub mod bones_poker_contract {
         require_eq!(expected_escrow_bump, _escrow_bump, PokerError::InvalidBump);
 
         // Validate PDA bump and seed
-        let (expected_gamepool_address, expected_gamepool_bump) =
-            Pubkey::find_program_address(&[GAME_POOL_SEED.as_bytes()], &bones_poker_contract::ID);
+        let (expected_gamepool_address, expected_gamepool_bump) = Pubkey::find_program_address(
+            &[GAME_POOL_SEED_V3.as_bytes()],
+            &bones_poker_contract::ID,
+        );
         require_keys_eq!(game_pool.key(), expected_gamepool_address);
         require_eq!(expected_gamepool_bump, _game_bump, PokerError::InvalidBump);
 
@@ -835,7 +922,7 @@ pub struct AddTournament<'info> {
         seeds = [TOURNAMENT_POOL_SEED.as_ref()],
         bump,
         payer= admin,
-        space=508+8,
+        space=1148+8,
     )]
     pub tournament_pool: Account<'info, TournamentPool>,
     pub system_program: Program<'info, System>,
@@ -855,10 +942,10 @@ pub struct AddTable<'info> {
     pub global_authority: Account<'info, GlobalPool>,
     #[account(
         init_if_needed,
-        seeds = [GAME_POOL_SEED.as_ref()],
+        seeds = [GAME_POOL_SEED_V3.as_ref()],
         bump,
         payer= admin,
-        space=508+8,
+        space=1148+8,
     )]
     pub game_pool: Account<'info, GamePool>,
     pub system_program: Program<'info, System>,
@@ -897,7 +984,7 @@ pub struct RemoveTable<'info> {
     pub global_authority: Account<'info, GlobalPool>,
     #[account(
         mut,
-        seeds = [GAME_POOL_SEED.as_ref()],
+        seeds = [GAME_POOL_SEED_V3.as_ref()],
         bump,
     )]
     pub game_pool: Account<'info, GamePool>,
@@ -926,6 +1013,46 @@ pub struct EnterTournament<'info> {
 
 #[derive(Accounts)]
 #[instruction(bump: u8)]
+pub struct EnterTableWithToken<'info> {
+    #[account(mut)]
+    pub player: Signer<'info>,
+    #[account(
+        mut,
+        seeds = [ESCROW_VAULT_SEED.as_ref()],
+        bump,
+    )]
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    pub escrow_vault: AccountInfo<'info>,
+    #[account(
+        mut,
+        seeds = [GAME_POOL_SEED_V3.as_ref()],
+        bump,
+    )]
+    pub game_pool: Account<'info, GamePool>,
+
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    pub token_mint: AccountInfo<'info>,
+
+    #[account(
+        mut,
+        constraint = player_token_account.owner == *player.key,
+        constraint = vault_token_account.mint == token_mint.key()
+    )]
+    pub player_token_account: Box<Account<'info, TokenAccount>>,
+
+    #[account(
+        mut,
+        constraint = vault_token_account.owner == *escrow_vault.key,
+        constraint = vault_token_account.mint == token_mint.key()
+    )]
+    pub vault_token_account: Box<Account<'info, TokenAccount>>,
+
+    pub token_program: Program<'info, Token>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+#[instruction(bump: u8)]
 pub struct EnterTable<'info> {
     #[account(mut)]
     pub player: Signer<'info>,
@@ -938,7 +1065,7 @@ pub struct EnterTable<'info> {
     pub escrow_vault: AccountInfo<'info>,
     #[account(
         mut,
-        seeds = [GAME_POOL_SEED.as_ref()],
+        seeds = [GAME_POOL_SEED_V3.as_ref()],
         bump,
     )]
     pub game_pool: Account<'info, GamePool>,
@@ -991,7 +1118,7 @@ pub struct UserLeaveTable<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     pub escrow_vault: AccountInfo<'info>,
     #[account(
-        seeds = [GAME_POOL_SEED.as_ref()],
+        seeds = [GAME_POOL_SEED_V3.as_ref()],
         bump,
     )]
     pub game_pool: Account<'info, GamePool>,

@@ -9,7 +9,8 @@ export const TREASURY_WALLET = new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvy
 export const BE_ADDRESS = new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU");
 export const ADMIN = new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V");
 export const GLOBAL_AUTHORITY_SEED = "global-authority-v1";
-export const GAME_POOL_SEED = "game-pool-v1";
+export const GAME_POOL_SEED = "game-pool-v3";
+
 export const TOURNAMENT_POOL_SEED = "tournament-pool-v1";
 export const ESCROW_VAULT_SEED = "escrow-vault-v1";
 
