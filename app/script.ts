@@ -384,7 +384,6 @@ export const createEnterTableTx = async (
     return tx;
 }
 
-
 export const createEnterTableWithTokenTx = async (
     player: PublicKey,
     program: anchor.Program,
@@ -418,7 +417,7 @@ export const createEnterTableWithTokenTx = async (
     let tx = new Transaction();
     if (instructions.length === 0) {
 
-        tx.add(program.instruction.enterTable(
+        tx.add(program.instruction.enterTableWithToken(
             escrow_bump, game_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
             accounts: {
                 player: player,
@@ -436,7 +435,9 @@ export const createEnterTableWithTokenTx = async (
         }));
 
     } else {
-        tx.add(program.instruction.enterTable(
+
+        tx.add(...instructions);
+        tx.add(program.instruction.enterTableWithToken(
             escrow_bump, game_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
             accounts: {
                 player: player,
@@ -449,7 +450,7 @@ export const createEnterTableWithTokenTx = async (
                 systemProgram: SystemProgram.programId,
 
             },
-            instructions: [...instructions],
+            instructions: [],
             signers: [],
         }));
     }
@@ -546,6 +547,66 @@ export const createUserLeaveTableTx = async (
 }
 
 
+export const createUserLeaveTableWithTokenTx = async (
+    admin: PublicKey,
+    program: anchor.Program,
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number,
+    user: PublicKey,
+    tokenMint: PublicKey,
+    solConnection: Connection
+) => {
+
+    const [globalAuthority, global_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GLOBAL_AUTHORITY_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [escrowVault, escrow_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(ESCROW_VAULT_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [gamePool, game_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GAME_POOL_SEED)],
+        PROGRAM_ID,
+    );
+
+    let vaultTokenAccount = await getAssociatedTokenAccount(escrowVault, tokenMint);
+    let { instructions, destinationAccounts } = await getATokenAccountsNeedCreate(
+        solConnection,
+        user,
+        user,
+        [tokenMint]
+    );
+
+    let tx = new Transaction();
+    if (instructions.length > 0) {
+        tx.add(...instructions);
+    }
+    tx.add(program.instruction.userLeaveTableWithToken(
+        global_bump, escrow_bump, game_bump, new anchor.BN(stack), new anchor.BN(buy_in), new anchor.BN(blinds), new anchor.BN(max_seats), {
+        accounts: {
+            owner: admin,
+            globalAuthority,
+            escrowVault,
+            gamePool,
+            tokenMint,
+            user,
+            playerTokenAccount: destinationAccounts[0],
+            vaultTokenAccount,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+
+        },
+        instructions: [],
+        signers: [],
+    }));
+    return tx;
+}
+
 export const createSendRewardTx = async (
     owner: PublicKey,
     program: anchor.Program,
@@ -582,7 +643,78 @@ export const createSendRewardTx = async (
     return tx;
 }
 
+export const createSendRewardWithTokenTx = async (
+    owner: PublicKey,
+    program: anchor.Program,
+    winner: PublicKey,
+    totalWinnedVault: number,
+    leaveVault: number,
+    tokenMint: PublicKey,
+    solConnection: Connection
+) => {
 
+    const [globalAuthority, global_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(GLOBAL_AUTHORITY_SEED)],
+        PROGRAM_ID,
+    );
+
+    const [escrowVault, escrow_bump] = await PublicKey.findProgramAddress(
+        [Buffer.from(ESCROW_VAULT_SEED)],
+        PROGRAM_ID,
+    );
+
+    let vaultTokenAccount = await getAssociatedTokenAccount(escrowVault, tokenMint);
+    console.log("vault token account ", vaultTokenAccount.toBase58())
+    let tx = new Transaction();
+
+    let { instructions, destinationAccounts } = await getATokenAccountsNeedCreate(
+        solConnection,
+        owner,
+        winner,
+        [tokenMint]
+    );
+    let winnerTokenAccount = destinationAccounts[0];
+    if (instructions.length > 0) {
+        tx.add(...instructions)
+    }
+
+    let result = await getATokenAccountsNeedCreate(
+        solConnection,
+        owner,
+        TREASURY_WALLET,
+        [tokenMint],
+        false
+    );
+    let treasuryTokenAccount = result.destinationAccounts[0]
+    if (result.instructions.length > 0) {
+        tx.add(...result.instructions)
+    }
+
+    // if (result.instructions.length > 0) {
+    //     tx.add(...result.instructions);
+    // }
+
+
+    tx.add(program.instruction.sendRewardWithToken(
+        global_bump, escrow_bump, new anchor.BN(totalWinnedVault), new anchor.BN(leaveVault), {
+        accounts: {
+            owner,
+            globalAuthority,
+            escrowVault,
+            treasury: TREASURY_WALLET,
+            winner,
+            tokenMint,
+            winnerTokenAccount,
+            vaultTokenAccount,
+            treasuryTokenAccount,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+        },
+        instructions: [],
+        signers: [],
+    }));
+    return tx;
+}
 
 export const getDecimals = async (
     owner: PublicKey,
@@ -616,12 +748,14 @@ export const getATokenAccountsNeedCreate = async (
     walletAddress: anchor.web3.PublicKey,
     owner: anchor.web3.PublicKey,
     nfts: anchor.web3.PublicKey[],
+    walletATAGenerate: boolean = true
 ) => {
     let instructions = [], destinationAccounts = [];
     for (const mint of nfts) {
         const destinationPubkey = await getAssociatedTokenAccount(owner, mint);
         let response = await connection.getAccountInfo(destinationPubkey);
         if (!response) {
+
             const createATAIx = createAssociatedTokenAccountInstruction(
                 destinationPubkey,
                 walletAddress,
@@ -631,10 +765,12 @@ export const getATokenAccountsNeedCreate = async (
             instructions.push(createATAIx);
         }
         destinationAccounts.push(destinationPubkey);
-        if (walletAddress != owner) {
+        if (walletAddress != owner && walletATAGenerate) {
+
             const userAccount = await getAssociatedTokenAccount(walletAddress, mint);
             response = await connection.getAccountInfo(userAccount);
             if (!response) {
+
                 const createATAIx = createAssociatedTokenAccountInstruction(
                     userAccount,
                     walletAddress,

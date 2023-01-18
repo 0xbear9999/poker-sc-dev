@@ -11,7 +11,7 @@ import {
     Keypair
 } from '@solana/web3.js';
 import { ESCROW_VAULT_SEED, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID } from './types';
-import { createAddTableTx, createAddTournamentTx, createEnterTableTx, createEnterTableWithTokenTx, createEnterTournamentTx, createInitializeTx, createRemoveTableTx, createRemoveTournamentTx, createSendRewardTx, createUpdateAdminTx, createUpdateBackendWalletTx, createUpdateTreasuryTx, createUserLeaveTableTx, createUserLeaveTournamentTx, getTableData } from './script';
+import { createAddTableTx, createAddTournamentTx, createEnterTableTx, createEnterTableWithTokenTx, createEnterTournamentTx, createInitializeTx, createRemoveTableTx, createRemoveTournamentTx, createSendRewardTx, createSendRewardWithTokenTx, createUpdateAdminTx, createUpdateBackendWalletTx, createUpdateTreasuryTx, createUserLeaveTableTx, createUserLeaveTableWithTokenTx, createUserLeaveTournamentTx, getTableData } from './script';
 
 
 let solConnection = null;
@@ -56,23 +56,30 @@ export const setClusterConfig = async (cluster: web3.Cluster) => {
 
 
 const main = async () => {
-    setClusterConfig('mainnet-beta');
+    setClusterConfig('devnet');
     // await initProject();
     // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
     // await getTableDataOnChain();
 
     // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
-    await updateAdmin(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"));
+    // await updateAdmin(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"));
 
     // await updateTreasury(new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU"));
     // await updateBackendWallet(new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"));
-    // await addTable(1000, 100000000, 50, 2);
+
+    // await addTable(1000, 100000000, 50, 2, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"));
+
     // await RemoveTable(500, 10000000, 40, 10);
 
     // await enterTable(1000, 100000000, 50, 2);
-    // await userLeaveTableOnChain(100, 100000000, 10, 8, new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"))
-    // await sendReward(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"), 400000000, 0);
+    // await enterTableWithTokenOnChain(1000, 100000000, 50, 2, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"))
 
+    // await userLeaveTableOnChain(1000, 100000000, 50, 2, new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU"))
+
+    // await userLeaveTableWithTokenOnChain(1000, 100000000, 50, 2, new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"), new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"));
+
+    // await sendReward(new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"), 100000000, 0);
+    // await sendRewardWithToken(new PublicKey("DjMMsvj4ZUBpAXCaR2Z7XuqzWFMegpb86iEKBfj1HrH8"), 100000000, 10000000, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"))
 }
 
 export const getTableDataOnChain = async () => {
@@ -275,6 +282,28 @@ export const userLeaveTableOnChain = async (
     }
 }
 
+export const userLeaveTableWithTokenOnChain = async (
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number,
+    user: PublicKey,
+    tokenMint: PublicKey
+) => {
+    try {
+        const tx = await createUserLeaveTableWithTokenTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, user, tokenMint, solConnection);
+        const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
+        tx.feePayer = payer.publicKey;
+        tx.recentBlockhash = blockhash;
+        payer.signTransaction(tx);
+        let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
+        await solConnection.confirmTransaction(txId, "confirmed");
+        console.log("userleave txHash =", txId);
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 export const sendReward = async (
     winner: PublicKey,
     totalWinnedVault: number,
@@ -284,6 +313,28 @@ export const sendReward = async (
         console.log("payer >> ", payer.publicKey.toBase58())
 
         const tx = await createSendRewardTx(payer.publicKey, program, winner, totalWinnedVault, leaveVault);
+        const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
+        tx.feePayer = payer.publicKey;
+        tx.recentBlockhash = blockhash;
+        payer.signTransaction(tx);
+        let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
+        await solConnection.confirmTransaction(txId, "confirmed");
+        console.log("sendReward txHash =", txId);
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const sendRewardWithToken = async (
+    winner: PublicKey,
+    totalWinnedVault: number,
+    leaveVault: number,
+    tokenMint: PublicKey
+) => {
+    try {
+        console.log("payer >> ", payer.publicKey.toBase58())
+
+        const tx = await createSendRewardWithTokenTx(payer.publicKey, program, winner, totalWinnedVault, leaveVault, tokenMint, solConnection);
         const { blockhash } = await solConnection.getLatestBlockhash('confirmed');
         tx.feePayer = payer.publicKey;
         tx.recentBlockhash = blockhash;

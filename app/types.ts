@@ -5,7 +5,8 @@ export const PROGRAM_ID = new PublicKey("7q9ZzDW4o8K4QPoNirc8tfmt72HwAxB4zvf1Qnj
 // sc address 1 : 5kdbnm4Kdc83dCSCVSASyoAJNemUt3bdFrPE3cpyvwZV
 // sc address 2 : A6gEoFvGyNPyYjYs7kQLibAsn3H8wD5f4rVDvBjTVace
 
-export const TREASURY_WALLET = new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU");
+// export const TREASURY_WALLET = new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU");
+export const TREASURY_WALLET = new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK");
 export const BE_ADDRESS = new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU");
 export const ADMIN = new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V");
 export const GLOBAL_AUTHORITY_SEED = "global-authority-v1";

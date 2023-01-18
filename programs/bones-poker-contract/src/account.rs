@@ -13,23 +13,23 @@ pub struct GlobalPool {
 #[account]
 #[derive(Default)]
 pub struct GamePool {
-    // 8 + 1148
+    // 8 + 1034
     pub table_count: u64,        // 8
-    pub stack: [u64; 20],        // 160
-    pub buy_in: [u64; 20],       // 160
-    pub blinds: [u64; 20],       // 160
-    pub max_seats: [u8; 20],     // 20
-    pub pay_token: [Pubkey; 20], //32*20
+    pub stack: [u64; 18],        // 144
+    pub buy_in: [u64; 18],       // 144
+    pub blinds: [u64; 18],       // 144
+    pub max_seats: [u8; 18],     // 18
+    pub pay_token: [Pubkey; 18], // 32*18
 }
 
 #[account]
 #[derive(Default)]
 pub struct TournamentPool {
-    // 8 + 1148
+    // 8 + 1034
     pub tournament_count: u64,   // 8
-    pub stack: [u64; 20],        // 160
-    pub buy_in: [u64; 20],       // 160
-    pub blinds: [u64; 20],       // 160
-    pub max_seats: [u8; 20],     // 20
-    pub pay_token: [Pubkey; 20], //32*20
+    pub stack: [u64; 18],        // 144
+    pub buy_in: [u64; 18],       // 144
+    pub blinds: [u64; 18],       // 144
+    pub max_seats: [u8; 18],     // 18
+    pub pay_token: [Pubkey; 18], //32*18
 }

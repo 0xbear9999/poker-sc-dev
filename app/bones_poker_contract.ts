@@ -226,6 +226,10 @@ export type BonesPokerContract = {
         {
           "name": "maxSeats",
           "type": "u8"
+        },
+        {
+          "name": "token",
+          "type": "publicKey"
         }
       ]
     },
@@ -318,6 +322,10 @@ export type BonesPokerContract = {
         {
           "name": "maxSeats",
           "type": "u8"
+        },
+        {
+          "name": "token",
+          "type": "publicKey"
         }
       ]
     },
@@ -388,6 +396,77 @@ export type BonesPokerContract = {
         {
           "name": "gamePool",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "enterTableWithToken",
+      "accounts": [
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gamePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -554,6 +633,91 @@ export type BonesPokerContract = {
       ]
     },
     {
+      "name": "userLeaveTableWithToken",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gamePool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "sendReward",
       "accounts": [
         {
@@ -579,6 +743,84 @@ export type BonesPokerContract = {
         {
           "name": "winner",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "rewardAmount",
+          "type": "u64"
+        },
+        {
+          "name": "leaveAmount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sendRewardWithToken",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "winner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "winnerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -646,7 +888,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -655,7 +897,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -664,7 +906,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -673,7 +915,16 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u8",
-                20
+                18
+              ]
+            }
+          },
+          {
+            "name": "payToken",
+            "type": {
+              "array": [
+                "publicKey",
+                18
               ]
             }
           }
@@ -694,7 +945,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -703,7 +954,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -712,7 +963,7 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -721,7 +972,16 @@ export type BonesPokerContract = {
             "type": {
               "array": [
                 "u8",
-                20
+                18
+              ]
+            }
+          },
+          {
+            "name": "payToken",
+            "type": {
+              "array": [
+                "publicKey",
+                18
               ]
             }
           }
@@ -1026,6 +1286,10 @@ export const IDL: BonesPokerContract = {
         {
           "name": "maxSeats",
           "type": "u8"
+        },
+        {
+          "name": "token",
+          "type": "publicKey"
         }
       ]
     },
@@ -1118,6 +1382,10 @@ export const IDL: BonesPokerContract = {
         {
           "name": "maxSeats",
           "type": "u8"
+        },
+        {
+          "name": "token",
+          "type": "publicKey"
         }
       ]
     },
@@ -1188,6 +1456,77 @@ export const IDL: BonesPokerContract = {
         {
           "name": "gamePool",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "enterTableWithToken",
+      "accounts": [
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gamePool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1354,6 +1693,91 @@ export const IDL: BonesPokerContract = {
       ]
     },
     {
+      "name": "userLeaveTableWithToken",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gamePool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "playerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "gameBump",
+          "type": "u8"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "sendReward",
       "accounts": [
         {
@@ -1379,6 +1803,84 @@ export const IDL: BonesPokerContract = {
         {
           "name": "winner",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "rewardAmount",
+          "type": "u64"
+        },
+        {
+          "name": "leaveAmount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sendRewardWithToken",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "winner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "winnerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1446,7 +1948,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -1455,7 +1957,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -1464,7 +1966,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -1473,7 +1975,16 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u8",
-                20
+                18
+              ]
+            }
+          },
+          {
+            "name": "payToken",
+            "type": {
+              "array": [
+                "publicKey",
+                18
               ]
             }
           }
@@ -1494,7 +2005,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -1503,7 +2014,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -1512,7 +2023,7 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u64",
-                20
+                18
               ]
             }
           },
@@ -1521,7 +2032,16 @@ export const IDL: BonesPokerContract = {
             "type": {
               "array": [
                 "u8",
-                20
+                18
+              ]
+            }
+          },
+          {
+            "name": "payToken",
+            "type": {
+              "array": [
+                "publicKey",
+                18
               ]
             }
           }
