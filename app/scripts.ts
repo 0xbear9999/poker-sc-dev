@@ -11,7 +11,7 @@ import {
     Keypair
 } from '@solana/web3.js';
 import { ESCROW_VAULT_SEED, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID } from './types';
-import { createAddTableTx, createAddTournamentTx, createEnterTableTx, createEnterTableWithTokenTx, createEnterTournamentTx, createInitializeTx, createRemoveTableTx, createRemoveTournamentTx, createSendRewardTx, createSendRewardWithTokenTx, createUpdateAdminTx, createUpdateBackendWalletTx, createUpdateTreasuryTx, createUserLeaveTableTx, createUserLeaveTableWithTokenTx, createUserLeaveTournamentTx, getTableData } from './script';
+import { createAddTableTx, createAddTournamentTx, createEnterTableTx, createEnterTableWithTokenTx, createEnterTournamentTx, createInitializeTx, createRemoveTableTx, createRemoveTournamentTx, createSendRewardTx, createSendRewardWithTokenTx, createUpdateAdminTx, createUpdateBackendWalletTx, createUpdateTreasuryTx, createUserLeaveTableTx, createUserLeaveTableWithTokenTx, createUserLeaveTournamentTx, createUserLeaveTournamentWithTokenTx, getTableData } from './script';
 
 
 let solConnection = null;
@@ -59,7 +59,7 @@ const main = async () => {
     setClusterConfig('devnet');
     // await initProject();
     // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
-    // await getTableDataOnChain();
+    await getTableDataOnChain();
 
     // Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V
     // await updateAdmin(new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V"));
@@ -69,7 +69,7 @@ const main = async () => {
 
     // await addTable(1000, 100000000, 50, 2, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"));
 
-    // await RemoveTable(500, 10000000, 40, 10);
+    // await RemoveTable(1000, 100000000, 50, 2, new PublicKey("So11111111111111111111111111111111111111111"));
 
     // await enterTable(1000, 100000000, 50, 2);
     // await enterTableWithTokenOnChain(1000, 100000000, 50, 2, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"))
@@ -78,7 +78,7 @@ const main = async () => {
 
     // await userLeaveTableWithTokenOnChain(1000, 100000000, 50, 2, new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"), new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"));
 
-    // await sendReward(new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"), 100000000, 0);
+    // await sendReward(new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU"), 1890000000, 0);
     // await sendRewardWithToken(new PublicKey("DjMMsvj4ZUBpAXCaR2Z7XuqzWFMegpb86iEKBfj1HrH8"), 100000000, 10000000, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"))
 }
 
@@ -151,7 +151,7 @@ export const addTable = async (
     buy_in: number,
     blinds: number,
     max_seats: number,
-    tokenMint: PublicKey
+    tokenMint: PublicKey,
 ) => {
     const tx = await createAddTableTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, tokenMint);
     const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
@@ -168,9 +168,10 @@ export const addTournament = async (
     stack: number,
     buy_in: number,
     blinds: number,
-    max_seats: number
+    max_seats: number,
+    tokenMint: PublicKey
 ) => {
-    const tx = await createAddTournamentTx(payer.publicKey, program, stack, buy_in, blinds, max_seats);
+    const tx = await createAddTournamentTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, tokenMint);
     const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
     tx.feePayer = payer.publicKey;
     tx.recentBlockhash = blockhash;
@@ -183,9 +184,10 @@ export const RemoveTournament = async (
     stack: number,
     buy_in: number,
     blinds: number,
-    max_seats: number
+    max_seats: number,
+    tokenMint: PublicKey
 ) => {
-    const tx = await createRemoveTournamentTx(payer.publicKey, program, stack, buy_in, blinds, max_seats);
+    const tx = await createRemoveTournamentTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, tokenMint);
     const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
     tx.feePayer = payer.publicKey;
     tx.recentBlockhash = blockhash;
@@ -252,6 +254,25 @@ export const userLeaveTournament = async (
     user: PublicKey
 ) => {
     const tx = await createUserLeaveTournamentTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, user);
+    const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
+    tx.feePayer = payer.publicKey;
+    tx.recentBlockhash = blockhash;
+    payer.signTransaction(tx);
+    let txId = await solConnection.sendTransaction(tx, [(payer as NodeWallet).payer]);
+    await solConnection.confirmTransaction(txId, "confirmed");
+    console.log("txHash =", txId);
+}
+
+
+export const userLeaveTournamentWithToken = async (
+    stack: number,
+    buy_in: number,
+    blinds: number,
+    max_seats: number,
+    user: PublicKey,
+    tokenMint: PublicKey
+) => {
+    const tx = await createUserLeaveTournamentWithTokenTx(payer.publicKey, program, stack, buy_in, blinds, max_seats, user, tokenMint, solConnection);
     const { blockhash } = await solConnection.getRecentBlockhash('confirmed');
     tx.feePayer = payer.publicKey;
     tx.recentBlockhash = blockhash;

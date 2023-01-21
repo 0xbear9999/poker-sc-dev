@@ -32,13 +32,13 @@ pub enum PokerError {
     // 0x1779
     #[msg("Tournament Does Not Exist")]
     TournamentNotFound,
-    // 0x1780
+    // 0x177a
     #[msg("Insufficient Sol Balance")]
     InsufficientSolBalance,
-    // 0x1781
+    // 0x177b
     #[msg("Invalid Treasury Address")]
     InvalidTreasuryAddress,
-    // 0x1782
+    // 0x177c
     #[msg("Table Is Already Existing")]
     TableAlreadyExist,
 }

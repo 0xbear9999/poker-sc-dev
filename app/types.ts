@@ -6,13 +6,13 @@ export const PROGRAM_ID = new PublicKey("7q9ZzDW4o8K4QPoNirc8tfmt72HwAxB4zvf1Qnj
 // sc address 2 : A6gEoFvGyNPyYjYs7kQLibAsn3H8wD5f4rVDvBjTVace
 
 // export const TREASURY_WALLET = new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU");
-export const TREASURY_WALLET = new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK");
+export const TREASURY_WALLET = new PublicKey("vbFsWcMNyhp7GeqmBpmTcr5aJ4C8piopvyVSFyHVxVU");
 export const BE_ADDRESS = new PublicKey("3wXAk9JUYqbVcXyYtNAgQzHz7m47CzQ6kRPennxpJFtU");
 export const ADMIN = new PublicKey("Nu8tPJheGmoe1RnZXTcEs8pPa52CBUNR72DZsqTUd5V");
 export const GLOBAL_AUTHORITY_SEED = "global-authority-v1";
-export const GAME_POOL_SEED = "game-pool-v3";
+export const GAME_POOL_SEED = "game-pool-v4";
 
-export const TOURNAMENT_POOL_SEED = "tournament-pool-v1";
+export const TOURNAMENT_POOL_SEED = "tournament-pool-v2";
 export const ESCROW_VAULT_SEED = "escrow-vault-v1";
 
 export interface GlobalPool {
@@ -29,6 +29,7 @@ export interface GamePool {
     buy_in: anchor.BN[],      // 8*10
     blinds: anchor.BN[],      // 8*10
     max_seats: number[],      // 1*10
+    payToken: PublicKey[]
 }
 
 
@@ -38,4 +39,5 @@ export interface GamePoolOnChain {
     buyIn: anchor.BN[],      // 8*10
     blinds: anchor.BN[],      // 8*10
     maxSeats: number[],      // 1*10
+    payToken: PublicKey[]
 }
