@@ -13,7 +13,10 @@ export const GLOBAL_AUTHORITY_SEED = "global-authority-v1";
 export const GAME_POOL_SEED = "game-pool-v4";
 
 export const TOURNAMENT_POOL_SEED = "tournament-pool-v2";
+export const TOURNAMENT_POOL_SIZE = 2916;
+
 export const ESCROW_VAULT_SEED = "escrow-vault-v1";
+export const DEPLOY_WALLET_ADDRESS = "4JVKGKYATWKhtvQdP8DQkEz5Aq54xUU7EaToVUGnJJaS";
 
 export interface GlobalPool {
     // 8 + 128
