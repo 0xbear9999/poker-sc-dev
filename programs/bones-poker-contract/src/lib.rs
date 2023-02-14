@@ -186,7 +186,7 @@ pub mod bones_poker_contract {
         //     }
         //     require!(exist == 0, PokerError::TableAlreadyExist);
         // }
-        tournament_pool.register(stack, buy_in, blinds, max_seats, token, revenue);
+        tournament_pool.register(stack, buy_in, blinds, max_seats, token, revenue)?;
 
         Ok(())
     }
@@ -282,7 +282,7 @@ pub mod bones_poker_contract {
             PokerError::InvalidAdmin
         );
 
-        tournament_pool.remove(stack, buy_in, blinds, max_seats, token, revenue);
+        tournament_pool.remove(stack, buy_in, blinds, max_seats, token, revenue)?;
 
         Ok(())
     }
@@ -379,7 +379,7 @@ pub mod bones_poker_contract {
             blinds,
             max_seats,
             SOL_ADDRESS.parse::<Pubkey>().unwrap(),
-        );
+        )?;
 
         invoke(
             &system_instruction::transfer(
@@ -419,7 +419,7 @@ pub mod bones_poker_contract {
         require_keys_eq!(escrow_vault.key(), expected_escrow_address);
         require_eq!(expected_escrow_bump, _escrow_bump, PokerError::InvalidBump);
 
-        tournament_pool.find(stack, buy_in, blinds, max_seats, token_mint.key());
+        tournament_pool.find(stack, buy_in, blinds, max_seats, token_mint.key())?;
 
         let cpi_accounts = Transfer {
             from: player_token_account.to_account_info().clone(),
@@ -602,7 +602,7 @@ pub mod bones_poker_contract {
         require_keys_eq!(escrow_vault.key(), expected_escrow_address);
         require_eq!(expected_escrow_bump, _escrow_bump, PokerError::InvalidBump);
 
-        tournament_pool.find(stack, buy_in, blinds, max_seats, token_mint.key());
+        tournament_pool.find(stack, buy_in, blinds, max_seats, token_mint.key())?;
 
         let seeds = &[ESCROW_VAULT_SEED.as_bytes(), &[_escrow_bump]];
         let signer = &[&seeds[..]];
@@ -670,7 +670,7 @@ pub mod bones_poker_contract {
             blinds,
             max_seats,
             SOL_ADDRESS.parse::<Pubkey>().unwrap(),
-        );
+        )?;
 
         let seeds = &[ESCROW_VAULT_SEED.as_bytes(), &[_escrow_bump]];
         let signer = &[&seeds[..]];
@@ -1088,7 +1088,7 @@ pub mod bones_poker_contract {
     }
 
     pub fn send_tournament_reward<'a, 'b, 'c, 'info>(
-        ctx: Context<'a, 'b, 'c, 'info, SendTournamnetReward<'info>>,
+        ctx: Context<'a, 'b, 'c, 'info, SendTournamentReward<'info>>,
         _global_bump: u8,
         _escrow_bump: u8,
         reward_amount: u64,
@@ -1144,7 +1144,7 @@ pub mod bones_poker_contract {
             max_seats,
             SOL_ADDRESS.parse::<Pubkey>().unwrap(),
             revenue.clone(),
-        );
+        )?;
 
         let seeds = &[ESCROW_VAULT_SEED.as_bytes(), &[_escrow_bump]];
         let signer = &[&seeds[..]];
@@ -1193,7 +1193,7 @@ pub mod bones_poker_contract {
     }
 
     pub fn send_tournament_reward_with_token<'a, 'b, 'c, 'info>(
-        ctx: Context<'a, 'b, 'c, 'info, SendTournamnetRewardWithToken<'info>>,
+        ctx: Context<'a, 'b, 'c, 'info, SendTournamentRewardWithToken<'info>>,
         _global_bump: u8,
         _escrow_bump: u8,
         reward_amount: u64,
@@ -1253,7 +1253,7 @@ pub mod bones_poker_contract {
             max_seats,
             token_mint.to_account_info().clone().key(),
             revenue.clone(),
-        );
+        )?;
 
         let seeds = &[ESCROW_VAULT_SEED.as_bytes(), &[_escrow_bump]];
         let signer = &[&seeds[..]];
@@ -1784,7 +1784,7 @@ pub struct SendRewardWithToken<'info> {
 }
 
 #[derive(Accounts)]
-pub struct SendTournamnetReward<'info> {
+pub struct SendTournamentReward<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
     #[account(
@@ -1809,7 +1809,7 @@ pub struct SendTournamnetReward<'info> {
 }
 
 #[derive(Accounts)]
-pub struct SendTournamnetRewardWithToken<'info> {
+pub struct SendTournamentRewardWithToken<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
     #[account(

@@ -12,7 +12,7 @@ import {
     TransactionInstruction,
     sendAndConfirmTransaction
 } from '@solana/web3.js';
-import { DEPLOY_WALLET_ADDRESS, ESCROW_VAULT_SEED, GamePool, GamePoolOnChain, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID, TOURNAMENT_POOL_SEED, TOURNAMENT_POOL_SIZE, TREASURY_WALLET } from './types';
+import { DEPLOY_WALLET_ADDRESS, Distribution, ESCROW_VAULT_SEED, GamePool, GamePoolOnChain, GAME_POOL_SEED, GLOBAL_AUTHORITY_SEED, PROGRAM_ID, TournamentPoolOnChain, TOURNAMENT_POOL_SEED, TOURNAMENT_POOL_SIZE, TREASURY_WALLET } from './types';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 export const getTableData = async (
@@ -31,9 +31,18 @@ export const getTableData = async (
         [Buffer.from(ESCROW_VAULT_SEED)],
         PROGRAM_ID,
     );
-    console.log("global authority ", globalAuthority.toBase58());
-    console.log("game pool ", gamePool.toBase58());
-    console.log("vault ", escrowVault.toBase58());
+
+
+    let tournamentPool = await anchor.web3.PublicKey.createWithSeed(
+        new PublicKey(DEPLOY_WALLET_ADDRESS),
+        TOURNAMENT_POOL_SEED,
+        PROGRAM_ID,
+    );
+
+
+    // console.log("global authority ", globalAuthority.toBase58());
+    // console.log("game pool ", gamePool.toBase58());
+    // console.log("vault ", escrowVault.toBase58());
 
     try {
         let tableData = await program.account.gamePool.fetch(gamePool) as unknown as GamePoolOnChain;
@@ -42,13 +51,13 @@ export const getTableData = async (
         let blinds: number[] = [];
         let stack: number[] = [];
         let payTokens: string[] = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < tableCount; i++) {
             buyIn.push(tableData.buyIn[i].toNumber())
             blinds.push(tableData.blinds[i].toNumber())
             stack.push(tableData.stack[i].toNumber())
             payTokens.push(tableData.payToken[i].toBase58())
         }
-        let result = {
+        let table = {
             buyIn,
             blinds,
             stack,
@@ -56,10 +65,46 @@ export const getTableData = async (
             maxSeats: tableData.maxSeats,
             tableCount
         }
+        let tournamentData = await program.account.tournamentPool.fetch(tournamentPool) as unknown as TournamentPoolOnChain;
+        let tournamentCount = tournamentData.tournamentCount.toNumber();
+        let tournamentStack: number[] = [];
+        let tournamentBuyIn: number[] = [];
+        let tournamentBlinds: number[] = [];
+        let tournamentMaxSeats: number[] = [];
+        let tournamentPayToken: string[] = [];
+        let tournamentRevenue: Distribution[] = [];
+        for (let i = 0; i < tournamentCount; i++) {
+            tournamentStack.push(tournamentData.stack[i].toNumber());
+            tournamentBuyIn.push(tournamentData.buyIn[i].toNumber());
+            tournamentBlinds.push(tournamentData.blinds[i].toNumber());
+            tournamentMaxSeats.push(tournamentData.maxSeats[i]);
+            tournamentPayToken.push(tournamentData.payToken[i].toBase58());
+            let rewardCount = tournamentData.revenue[i].rewardCount.toNumber();
+            let reward: number[] = [];
+            for (let j = 0; j < rewardCount; j++) {
+                reward.push(tournamentData.revenue[i].reward[j].toNumber());
+            }
+            console.log({
+                rewardCount,
+                reward
+            })
+            tournamentRevenue.push({
+                rewardCount,
+                reward
+            })
+        }
+        let tournament = {
+            tournamentStack,
+            tournamentBuyIn,
+            tournamentBlinds,
+            tournamentMaxSeats,
+            tournamentPayToken,
+            tournamentRevenue,
+            tournamentCount
+        }
 
 
-        console.log(result)
-        return result;
+        return { table, tournament };
     } catch (e) {
         console.log(e)
         return null;
@@ -573,7 +618,6 @@ export const createUserLeaveTournamentTx = async (
     return tx;
 }
 
-
 export const createUserLeaveTournamentWithTokenTx = async (
     admin: PublicKey,
     program: anchor.Program,
@@ -849,8 +893,6 @@ export const createSendRewardWithTokenTx = async (
     return tx;
 }
 
-
-
 export const getDecimals = async (
     owner: PublicKey,
     tokenMint: PublicKey,
@@ -998,7 +1040,6 @@ export const createTournamentPoolTx = async (
     return tx;
 }
 
-
 export const createSendTournamentRewardTx = async (
     owner: PublicKey,
     program: anchor.Program,
@@ -1036,7 +1077,7 @@ export const createSendTournamentRewardTx = async (
         remainingAccounts.push({
             pubkey: new PublicKey(winner),
             isSigner: false,
-            isWritable: false
+            isWritable: true
         })
     }
 
@@ -1113,7 +1154,7 @@ export const createSendTournamentRewardWithTokenTx = async (
         remainingAccounts.push({
             pubkey: result.destinationAccounts[0],
             isSigner: false,
-            isWritable: false
+            isWritable: true
         })
     }
 

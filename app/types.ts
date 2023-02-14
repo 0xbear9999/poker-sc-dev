@@ -13,7 +13,7 @@ export const GLOBAL_AUTHORITY_SEED = "global-authority-v1";
 export const GAME_POOL_SEED = "game-pool-v4";
 
 export const TOURNAMENT_POOL_SEED = "tournament-pool-v2";
-export const TOURNAMENT_POOL_SIZE = 2916;
+export const TOURNAMENT_POOL_SIZE = 2920;
 
 export const ESCROW_VAULT_SEED = "escrow-vault-v1";
 export const DEPLOY_WALLET_ADDRESS = "4JVKGKYATWKhtvQdP8DQkEz5Aq54xUU7EaToVUGnJJaS";
@@ -43,4 +43,25 @@ export interface GamePoolOnChain {
     blinds: anchor.BN[],      // 8*10
     maxSeats: number[],      // 1*10
     payToken: PublicKey[]
+}
+
+export interface TournamentPoolOnChain {
+    tournamentCount: anchor.BN,       // 8
+    stack: anchor.BN[],            // 160
+    buyIn: anchor.BN[],           // 160
+    blinds: anchor.BN[],           // 160
+    revenue: DistributionOnChain[], // 88*20
+    maxSeats: number[],         // 20
+    payToken: PublicKey[],     //32*20
+
+}
+
+export interface DistributionOnChain {
+    reward: anchor.BN[],
+    rewardCount: anchor.BN,
+}
+
+export interface Distribution {
+    reward: number[],
+    rewardCount: number,
 }

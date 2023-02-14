@@ -77,11 +77,13 @@ impl TournamentPool {
         self.blinds[self.tournament_count as usize] = blinds;
         self.max_seats[self.tournament_count as usize] = max_seats;
         self.pay_token[self.tournament_count as usize] = pay_token;
-        self.tournament_count += 1;
         self.revenue[self.tournament_count as usize].reward_count = revenue.len() as u64;
         for i in 0..revenue.len() {
             self.revenue[self.tournament_count as usize].reward[i] = revenue[i];
         }
+        msg!("tournament added count: {:?}, stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken: {:?}, revenue count: {:?}, revenue reward: {:?} ", self.tournament_count, self.stack[self.tournament_count as usize], self.buy_in[self.tournament_count as usize], self.blinds[self.tournament_count as usize], self.max_seats[self.tournament_count as usize], self.pay_token[self.tournament_count as usize], self.revenue[self.tournament_count as usize].reward_count, self.revenue[self.tournament_count as usize].reward  );
+
+        self.tournament_count += 1;
         Ok(())
     }
 
@@ -126,11 +128,18 @@ impl TournamentPool {
                     self.revenue[index].reward_count = self.revenue[last_idx].reward_count;
                     self.revenue[index].reward = self.revenue[last_idx].reward;
                 }
+
                 self.tournament_count -= 1;
                 exist_flag = 1;
             }
+            msg!("tournament stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken: {:?}, rewardcount: {:?}, reward: {:?}", self.stack[index], self.buy_in[index], self.blinds[index], self.max_seats[index], self.pay_token[index], self.revenue[index].reward_count, self.revenue[index].reward);
         }
-        require_eq!(exist_flag, 1u8, PokerError::TournamentNotFound);
+
+        msg!("inuted stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken : {:?}, rewardcount: {:?}, reward: {:?}", stack, buy_in, blinds, max_seats, pay_token, reward_plan.reward, reward_plan.reward_count);
+        msg!("tournament exist {:?}", exist_flag);
+
+        /// This code is correct
+        require!(exist_flag == 1, PokerError::TournamentNotFound);
         Ok(())
     }
 

@@ -178,10 +178,6 @@ export type BonesPokerContract = {
           "type": "u8"
         },
         {
-          "name": "tournamentBump",
-          "type": "u8"
-        },
-        {
           "name": "stack",
           "type": "u64"
         },
@@ -1027,6 +1023,168 @@ export type BonesPokerContract = {
         {
           "name": "leaveAmount",
           "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sendTournamentReward",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "rewardAmount",
+          "type": "u64"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        },
+        {
+          "name": "revenue",
+          "type": {
+            "vec": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sendTournamentRewardWithToken",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "rewardAmount",
+          "type": "u64"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        },
+        {
+          "name": "revenue",
+          "type": {
+            "vec": "u64"
+          }
         }
       ]
     }
@@ -1454,10 +1612,6 @@ export const IDL: BonesPokerContract = {
           "type": "u8"
         },
         {
-          "name": "tournamentBump",
-          "type": "u8"
-        },
-        {
           "name": "stack",
           "type": "u64"
         },
@@ -2303,6 +2457,168 @@ export const IDL: BonesPokerContract = {
         {
           "name": "leaveAmount",
           "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sendTournamentReward",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "rewardAmount",
+          "type": "u64"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        },
+        {
+          "name": "revenue",
+          "type": {
+            "vec": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sendTournamentRewardWithToken",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tournamentPool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "globalBump",
+          "type": "u8"
+        },
+        {
+          "name": "escrowBump",
+          "type": "u8"
+        },
+        {
+          "name": "rewardAmount",
+          "type": "u64"
+        },
+        {
+          "name": "stack",
+          "type": "u64"
+        },
+        {
+          "name": "buyIn",
+          "type": "u64"
+        },
+        {
+          "name": "blinds",
+          "type": "u64"
+        },
+        {
+          "name": "maxSeats",
+          "type": "u8"
+        },
+        {
+          "name": "revenue",
+          "type": {
+            "vec": "u64"
+          }
         }
       ]
     }
