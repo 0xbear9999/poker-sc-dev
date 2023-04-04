@@ -81,7 +81,7 @@ export const getTableData = async (
             tournamentPayToken.push(tournamentData.payToken[i].toBase58());
             let rewardCount = tournamentData.revenue[i].rewardCount.toNumber();
             let reward: number[] = [];
-            for (let j = 0; j < rewardCount; j++) {
+            for (let j = 0; j < 10; j++) {
                 reward.push(tournamentData.revenue[i].reward[j].toNumber());
             }
             console.log({

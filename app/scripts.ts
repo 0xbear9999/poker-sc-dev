@@ -91,9 +91,9 @@ const main = async () => {
     // await createTournamentPool()
     // await addTournament(1000, 1000000, 50, 4, new PublicKey("So11111111111111111111111111111111111111112"), [50, 30, 20])
     // await enterTournament(1000, 1000000, 50, 4)
-    // await userLeaveTournament(1000, 1000000, 50, 4, new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"))
-
-    // await sendTournamentReward(1000000, 100, 100000000, 20, 4, [50, 30, 20], ["G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK", "GXTDoAHLCMwSzv8Avtf1UzR8zejqsFXmQrB7DT39DNLo", "DfS7cXaq77n4aLTZuL97LTyJLtRKVb3X2KewhKskvr1h"]);
+    await userLeaveTournament(5000, 10000000, 10, 80, new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"))
+    // , "DjMMsvj4ZUBpAXCaR2Z7XuqzWFMegpb86iEKBfj1HrH8", "6j29tWCuHogzNq2fHmDQ4A8C7yDRWgstKKNAD9tNTSat", "79Z6xiQfPY2XqoSp9gUb8Y6QDqmVWwH2AmBXLrtttcV9", "79Z6xiQfPY2XqoSp9gUb8Y6QDqmVWwH2AmBXLrtttcV9"
+    // await sendTournamentReward(1000000, 1000, 10000000, 20, 8, [5000, 3000, 2000], ["G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK", "DjMMsvj4ZUBpAXCaR2Z7XuqzWFMegpb86iEKBfj1HrH8", "6j29tWCuHogzNq2fHmDQ4A8C7yDRWgstKKNAD9tNTSat"]);
     // await addTournament(1000, 1000000, 50, 4, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"), [50, 30, 20]);
     // await enterTournamentWithToken(1000, 1000000, 50, 4, new PublicKey("AsACVnuMa5jpmfp3BjArmb2qWg5A6HBkuXePwT37RrLY"));
     // await userLeaveTournament(1000, 1000000, 50, 4, new PublicKey("G42V1DfQKKHrxxfdjDrRphPStZx5Jqu2JwShfN3WoKmK"));

@@ -106,15 +106,24 @@ impl TournamentPool {
             reward_plan.reward_count += 1;
         }
         let mut exist_flag: u8 = 0;
+
+        let stack_tmp = self.stack;
+        let buy_in_tmp = self.buy_in;
+        let blinds_tmp = self.blinds;
+        let max_seats_tmp = self.max_seats;
+        let pay_token_tmp = self.pay_token;
+        let revenue_tmp = self.revenue;
+
+
         for i in 0..self.tournament_count {
             let index = i as usize;
-            if self.stack[index].eq(&stack)
-                && self.buy_in[index].eq(&buy_in)
-                && self.blinds[index].eq(&blinds)
-                && self.max_seats[index].eq(&max_seats)
-                && self.pay_token[index].eq(&pay_token)
-                && self.revenue[index].reward.eq(&reward_plan.reward)
-                && self.revenue[index]
+            if stack_tmp[index].eq(&stack)
+                && buy_in_tmp[index].eq(&buy_in)
+                && blinds_tmp[index].eq(&blinds)
+                && max_seats_tmp[index].eq(&max_seats)
+                && pay_token_tmp[index].eq(&pay_token)
+                && revenue_tmp[index].reward.eq(&reward_plan.reward)
+                && revenue_tmp[index]
                     .reward_count
                     .eq(&reward_plan.reward_count)
             {
@@ -132,13 +141,13 @@ impl TournamentPool {
                 self.tournament_count -= 1;
                 exist_flag = 1;
             }
-            msg!("tournament stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken: {:?}, rewardcount: {:?}, reward: {:?}", self.stack[index], self.buy_in[index], self.blinds[index], self.max_seats[index], self.pay_token[index], self.revenue[index].reward_count, self.revenue[index].reward);
+            msg!("tournament stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken: {:?}, rewardcount: {:?}, reward: {:?}", stack_tmp[index].eq(&stack), buy_in_tmp[index].eq(&buy_in), blinds_tmp[index].eq(&blinds), max_seats_tmp[index].eq(&max_seats), pay_token_tmp[index].eq(&pay_token), revenue_tmp[index].reward.eq(&reward_plan.reward), revenue_tmp[index].reward_count.eq(&reward_plan.reward_count));
         }
 
-        msg!("inuted stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken : {:?}, rewardcount: {:?}, reward: {:?}", stack, buy_in, blinds, max_seats, pay_token, reward_plan.reward, reward_plan.reward_count);
+        // msg!("inuted stack: {:?}, buyin: {:?}, blinds: {:?}, maxseats: {:?}, paytoken : {:?}, rewardcount: {:?}, reward: {:?}", stack, buy_in, blinds, max_seats, pay_token, reward_plan.reward, reward_plan.reward_count);
         msg!("tournament exist {:?}", exist_flag);
 
-        /// This code is correct
+        //  This code is correct
         require!(exist_flag == 1, PokerError::TournamentNotFound);
         Ok(())
     }

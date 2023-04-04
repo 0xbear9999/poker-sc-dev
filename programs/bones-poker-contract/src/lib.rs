@@ -1103,6 +1103,10 @@ pub mod bones_poker_contract {
         let mut tournament_pool = ctx.accounts.tournament_pool.load_mut()?;
 
         let remaining_accounts: Vec<AccountInfo> = ctx.remaining_accounts.to_vec();
+
+        msg!("input remainingAccounts: {:?}, revenue: {:?}", remaining_accounts.len(), revenue.clone().len());
+        msg!("input rewardAmount: {:?}, stack: {:?}, buyIn: {:?}, blinds: {:?}, maxSeats: {:?}, revenue: {:?}", reward_amount, stack, buy_in, blinds, max_seats, revenue);
+
         require_eq!(
             remaining_accounts.len(),
             revenue.clone().len(),
